@@ -6,18 +6,8 @@ import mongoose from 'mongoose';
 import schema from './schema';
 
 const app = express();
+const PORT = process.env.PORT || 8001;
 dotenv.config();
-const PORT = process.env.PORT || 8080;
-
-app.use(cors());
-app.use(express.json());
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema,
-    graphiql: true,
-  })
-);
 
 mongoose.connect(process.env.MONGO_URI as string, {
   useNewUrlParser: true,
@@ -26,4 +16,14 @@ mongoose.connect(process.env.MONGO_URI as string, {
 
 mongoose.connection.once('open', () => console.log('DB connected'));
 
-app.listen(PORT, () => console.log('Server is  running'));
+app.use(express.json());
+app.use(cors());
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
+
+app.listen(PORT, () => console.log('Server is running'));

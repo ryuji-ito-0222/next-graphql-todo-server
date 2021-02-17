@@ -1,4 +1,4 @@
-import graphql, {
+import {
   GraphQLBoolean,
   GraphQLID,
   GraphQLList,
