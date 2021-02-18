@@ -2,6 +2,7 @@ import {
   GraphQLBoolean,
   GraphQLID,
   GraphQLList,
+  GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
@@ -36,4 +37,46 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
-export default new GraphQLSchema({ query: RootQuery });
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addTodo: {
+      type: TodoType,
+      args: {
+        todo: { type: GraphQLString },
+      },
+      resolve(_parent, args) {
+        const newTodo = new Todo({
+          todo: args.todo,
+          isCompleted: false,
+        });
+        return newTodo.save();
+      },
+    },
+    deleteTodo: {
+      type: TodoType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+      },
+      resolve(_parent, args) {
+        return Todo.findByIdAndRemove(args.id);
+      },
+    },
+    updateTodo: {
+      type: TodoType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        todo: { type: GraphQLString },
+        isCompleted: { type: GraphQLBoolean },
+      },
+      resolve(_parent, args) {
+        const updateTodo = { ...args };
+        args.todo && (updateTodo.todo = args.todo);
+        args.isCompleted && (updateTodo.isCompleted = args.isCompleted);
+        return Todo.findByIdAndUpdate(args.id, updateTodo, { new: true });
+      },
+    },
+  },
+});
+
+export default new GraphQLSchema({ query: RootQuery, mutation: Mutation });
