@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import schema from './schema';
 
 const app = express();
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 8080;
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URI as string, {

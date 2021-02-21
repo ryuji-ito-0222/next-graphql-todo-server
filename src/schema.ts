@@ -49,6 +49,7 @@ const Mutation = new GraphQLObjectType({
         const newTodo = new Todo({
           todo: args.todo,
           isCompleted: false,
+          created_at: Date.now(),
         });
         return newTodo.save();
       },
